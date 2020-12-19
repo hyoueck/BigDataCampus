@@ -1,0 +1,196 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "Untitled2.ipynb",
+      "provenance": [],
+      "authorship_tag": "ABX9TyOiCcBk7bQQMhRRJ4C8S6vG",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/hyoueck/BigDataCampus/blob/master/%EC%98%81%EC%96%B4%ED%8C%90\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "4q6cd0PjfM97",
+        "outputId": "4a014a9d-3c2c-407d-d1ad-36649de6b034"
+      },
+      "source": [
+        "!pip install transformers"
+      ],
+      "execution_count": 1,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Collecting transformers\n",
+            "\u001b[?25l  Downloading https://files.pythonhosted.org/packages/50/0c/7d5950fcd80b029be0a8891727ba21e0cd27692c407c51261c3c921f6da3/transformers-4.1.1-py3-none-any.whl (1.5MB)\n",
+            "\u001b[K     |████████████████████████████████| 1.5MB 6.3MB/s \n",
+            "\u001b[?25hRequirement already satisfied: requests in /usr/local/lib/python3.6/dist-packages (from transformers) (2.23.0)\n",
+            "Requirement already satisfied: numpy in /usr/local/lib/python3.6/dist-packages (from transformers) (1.19.4)\n",
+            "Requirement already satisfied: dataclasses; python_version < \"3.7\" in /usr/local/lib/python3.6/dist-packages (from transformers) (0.8)\n",
+            "Requirement already satisfied: tqdm>=4.27 in /usr/local/lib/python3.6/dist-packages (from transformers) (4.41.1)\n",
+            "Requirement already satisfied: regex!=2019.12.17 in /usr/local/lib/python3.6/dist-packages (from transformers) (2019.12.20)\n",
+            "Collecting tokenizers==0.9.4\n",
+            "\u001b[?25l  Downloading https://files.pythonhosted.org/packages/0f/1c/e789a8b12e28be5bc1ce2156cf87cb522b379be9cadc7ad8091a4cc107c4/tokenizers-0.9.4-cp36-cp36m-manylinux2010_x86_64.whl (2.9MB)\n",
+            "\u001b[K     |████████████████████████████████| 2.9MB 17.8MB/s \n",
+            "\u001b[?25hRequirement already satisfied: filelock in /usr/local/lib/python3.6/dist-packages (from transformers) (3.0.12)\n",
+            "Requirement already satisfied: packaging in /usr/local/lib/python3.6/dist-packages (from transformers) (20.8)\n",
+            "Collecting sacremoses\n",
+            "\u001b[?25l  Downloading https://files.pythonhosted.org/packages/7d/34/09d19aff26edcc8eb2a01bed8e98f13a1537005d31e95233fd48216eed10/sacremoses-0.0.43.tar.gz (883kB)\n",
+            "\u001b[K     |████████████████████████████████| 890kB 33.6MB/s \n",
+            "\u001b[?25hRequirement already satisfied: idna<3,>=2.5 in /usr/local/lib/python3.6/dist-packages (from requests->transformers) (2.10)\n",
+            "Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.6/dist-packages (from requests->transformers) (2020.12.5)\n",
+            "Requirement already satisfied: chardet<4,>=3.0.2 in /usr/local/lib/python3.6/dist-packages (from requests->transformers) (3.0.4)\n",
+            "Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in /usr/local/lib/python3.6/dist-packages (from requests->transformers) (1.24.3)\n",
+            "Requirement already satisfied: pyparsing>=2.0.2 in /usr/local/lib/python3.6/dist-packages (from packaging->transformers) (2.4.7)\n",
+            "Requirement already satisfied: six in /usr/local/lib/python3.6/dist-packages (from sacremoses->transformers) (1.15.0)\n",
+            "Requirement already satisfied: click in /usr/local/lib/python3.6/dist-packages (from sacremoses->transformers) (7.1.2)\n",
+            "Requirement already satisfied: joblib in /usr/local/lib/python3.6/dist-packages (from sacremoses->transformers) (1.0.0)\n",
+            "Building wheels for collected packages: sacremoses\n",
+            "  Building wheel for sacremoses (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "  Created wheel for sacremoses: filename=sacremoses-0.0.43-cp36-none-any.whl size=893261 sha256=a3044db4d93b0c741aac25ac0f8bc885b7afb0c2f36d542366e5c766fd34b106\n",
+            "  Stored in directory: /root/.cache/pip/wheels/29/3c/fd/7ce5c3f0666dab31a50123635e6fb5e19ceb42ce38d4e58f45\n",
+            "Successfully built sacremoses\n",
+            "Installing collected packages: tokenizers, sacremoses, transformers\n",
+            "Successfully installed sacremoses-0.0.43 tokenizers-0.9.4 transformers-4.1.1\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "IHF0Wc90g4Jh"
+      },
+      "source": [
+        "import tensorflow as tf\r\n",
+        "import torch\r\n",
+        "\r\n",
+        "from transformers import BertTokenizer\r\n",
+        "from transformers import BertForSequenceClassification, AdamW, BertConfig\r\n",
+        "from transformers import get_linear_schedule_with_warmup\r\n",
+        "from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler\r\n",
+        "from keras.preprocessing.sequence import pad_sequences\r\n",
+        "from sklearn.model_selection import train_test_split\r\n",
+        "\r\n",
+        "import pandas as pd\r\n",
+        "import numpy as np\r\n",
+        "import random\r\n",
+        "import time\r\n",
+        "import datetime"
+      ],
+      "execution_count": 2,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "PqmHGho9g43q",
+        "outputId": "1010c8eb-c978-4af9-a806-11d2a638c8f5"
+      },
+      "source": [
+        "!git clone https://github.com/hyoueck/BigDataCampus.git"
+      ],
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Cloning into 'BigDataCampus'...\n",
+            "remote: Enumerating objects: 5, done.\u001b[K\n",
+            "remote: Counting objects: 100% (5/5), done.\u001b[K\n",
+            "remote: Compressing objects: 100% (4/4), done.\u001b[K\n",
+            "remote: Total 5 (delta 1), reused 5 (delta 1), pack-reused 0\u001b[K\n",
+            "Unpacking objects: 100% (5/5), done.\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "nvMxJaepkRtb",
+        "outputId": "b6f6a192-9247-424b-d6dd-aa80c419739d"
+      },
+      "source": [
+        "!ls BigDataCampus- la"
+      ],
+      "execution_count": 5,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "total 2792\n",
+            "drwxr-xr-x 3 root root    4096 Dec 19 15:14 .\n",
+            "drwxr-xr-x 1 root root    4096 Dec 19 15:14 ..\n",
+            "-rw-r--r-- 1 root root  229392 Dec 19 15:14 friends_dev.json\n",
+            "-rw-r--r-- 1 root root  544341 Dec 19 15:14 friends_test.json\n",
+            "-rw-r--r-- 1 root root 2065470 Dec 19 15:14 friends_train.json\n",
+            "drwxr-xr-x 8 root root    4096 Dec 19 15:14 .git\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "5kbOzFUFkV3a"
+      },
+      "source": [
+        "import json\r\n",
+        "\r\n",
+        "data = {'train': {'speaker': [], 'utterance': [], 'emotion': []},\r\n",
+        "        'dev': {'speaker': [], 'utterance': [], 'emotion': []},\r\n",
+        "        'test': {'speaker': [], 'utterance': [], 'emotion': []}}\r\n",
+        "\r\n",
+        "for dtype in ['train', 'dev', 'test']:\r\n",
+        "  for dialog in json.loads(open('BigDataCampus/friends_' + dtype + '.json').read()):\r\n",
+        "    for line in dialog:\r\n",
+        "      data[dtype]['speaker'].append(line['speaker'])\r\n",
+        "      data[dtype]['utterance'].append(line['utterance'])\r\n",
+        "      data[dtype]['emotion'].append(line['emotion'])"
+      ],
+      "execution_count": 9,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "H4NcjZpclimG"
+      },
+      "source": [
+        ""
+      ],
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
